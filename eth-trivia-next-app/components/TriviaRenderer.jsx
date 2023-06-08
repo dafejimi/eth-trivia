@@ -1,8 +1,7 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
 const TriviaRenderer = async ({ setScore }) => {
-    const score = 0
     const [question, setQuestion] = useState('')
     const [correctAnswer, setCorrectAnswer] = useState('')
     const [incorrectOptions, setIncorrectOptions] = useState([])
@@ -34,10 +33,8 @@ const TriviaRenderer = async ({ setScore }) => {
             (event) => {
                 const data = new FormData(form).get("options")
                 if(data == correctAnswer) {
-                    score += 1
-                    setScore(score)
-                }
-                await 
+                    setScore((previousState) => previousState +1)
+                } 
                 setIsDisabled((previousState) => !previousState)
                 event.preventDefault()  
             }
@@ -45,7 +42,7 @@ const TriviaRenderer = async ({ setScore }) => {
     }, [question, correctAnswer, incorrectOptions, correctOption])
         
     return (
-        <div>
+        <div className="mx-2 my-2 px-1 py-1 bg-blue-400">
             <form>
                 <fieldset>
                     <legend>{question}</legend>

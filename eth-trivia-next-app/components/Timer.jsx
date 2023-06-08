@@ -1,21 +1,23 @@
-import React,{ useState } from 'react'
+import React,{ useState, useEffect } from 'react'
 
 const Timer = () => {
-    const [time, setTime] = useState(0)
+    const [seconds, setSeconds] = useState(30);
 
-    setInterval(() =>{
-        setTime((time) => time + 1)
-    }, 1000)
+    useEffect(() => {
+        const timer = setInterval(() => {
+        setSeconds((prevSeconds) => prevSeconds - 1);
+        }, 1000);
 
-    const isTimeElapsed = time >= 30
+        // Clean up the timer
+        return () => clearInterval(timer);
+    }, []);
 
-    return (
-      <div>
-          {
-          isTimeElapsed ? `00:${time}` : '00:00'
-          }
-      </div>
-    )
+    return <div className="bg-blue-400 px-2 py-2 ">{`00:${seconds}`}</div>;
 }
 
 export default Timer
+
+/* 
+    TO STYLE
+    - container div
+*/

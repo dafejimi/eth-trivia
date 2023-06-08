@@ -13,13 +13,14 @@ import TriviaRenderer from './TriviaRenderer';
 const dateObject = new Date()
 const authToken = new Cookies.get('token')
 const multiplier = 0.001
+const url_2 = "http://localhost:3000/players"
 
 const Trivia = () => {
     const { runContractFunction } = useWeb3Contract()
     const { account, isWeb3Enabled, chainId } = useMoralis()
 
     const chainString = chainId ? parseInt(chainId).toString() : null;
-    const ethTriviaAddress = chainId ? networkMapping[chainString].EthTrivia[0] : null;
+    const ethTriviaAddress = chainId ? networkMapping[chainString].triviaContractAddress[0] : null;
     
     const [isEntrantAccepted, setIsEntrantAccepted] = useState(() => checkEntryStatus())
     const [isTokenCorrect, setIsTokenCorrect] = useState(() => checkToken())
@@ -48,7 +49,7 @@ const Trivia = () => {
     const checkEntryStatus = async () => {
         let winningSlot
         const recentWinners = await getWinners()
-        for (let i = 0; i < recentWinners.length; i++) {
+        for (let i = 0; i <= 3; i++) {
             if(account == recentWinners[i]) winningSlot = recentWinners[i] 
         }
         if (winningSlot){ 
@@ -89,7 +90,7 @@ const Trivia = () => {
     }, [renderCount])
 
     const handleFinishClick = async () => {
-        scoreHandler(account, score, attemptCount)
+        result = await axios.put(`${url_2}/${account}`, {new_score: score,attempt_count: attemptCount})
         return (
             <div>
                 {`You Scored ${score} points, expect ${score * multiplier}ETH in your wallet address: ${account}`}
@@ -104,17 +105,17 @@ const Trivia = () => {
                     isTokenCorrect && isEntrantAccepted ? (
                         attemptCount <= 10 ? (
                             !isTimeElapsed ? (
-                                <div>
+                                <div className='bg-blue-400'>
                                     <Timer />
                                     <button onClick={renderTrivia}>Next</button>
                                 </div>
                             ) : {renderTrivia}
                         ): (
-                            <button onClick={handleFinishClick}>Finish</button>
+                            <button className="mx-2 my-2 px-1 py-1 bg-sky-200 rounded-md" onClick={handleFinishClick}>Finish</button>
                         )
                     )
-                    : <div>Unauthorized User</div>
-                ): <div>Connect to your web3 provider</div>
+                    : <div className="bg-blue-400 relative top-600 left-960">Unauthorized User</div>
+                ): <div  className="bg-blue-400 relative top-600 left-960">Connect to your web3 provider</div>
             }          
         </div>
     )

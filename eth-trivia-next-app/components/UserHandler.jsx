@@ -1,11 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useMoralis } from 'react-moralis';
 
 import Cookies from "universal-cookie"
 
-import { log_details, check_in } from "../scripts/handle-requests"
-
 const cookie = new Cookies()
+const url_1 = "http://localhost:3000/entrants"
 
 const entryParams = {
     fullName: '',
@@ -25,8 +24,15 @@ const UserHandler = ({ setIsData }) => {
         e.preventDefault()
 
         const { fullName, address } = userParams
-        result = check_in(fullName, address)
-        cookie.set('token', result.token)
+        try {         
+            const result = await axios.get(`${url_1}?${full_name=fullName}&${wallet_address=address}`)
+            if (result.wallet_address == address && result.full_name == fullName)  {
+                cookie.set('token', result.token)
+            }
+    
+        } catch(error) {
+            console.log(eror);
+        }
 
         params['fullName'] = '';
         params['address'] = '';
@@ -37,8 +43,16 @@ const UserHandler = ({ setIsData }) => {
         e.preventDefault();
 
         const { fullName, address } = userParams
-        result = log_details(fullName, address)
-        cookie.set('token', result.token)
+        try {
+            const tokenString = crypto.randomBytes(16)
+            const hashedToken = crypto.createHash('sha256').update(tokenString).digest('hex')
+    
+            const result = await axios.post(url_1, { full_name: fullName, wallet_address: address, token: hashedToken })
+            cookie.set('token', result.token)
+        } catch(error) {
+            console.log(error) 
+        }
+        
 
         params['fullName'] = '';
         params['address'] = '';
@@ -48,10 +62,11 @@ const UserHandler = ({ setIsData }) => {
     <div>{
             isWeb3Enabled ? (
                 <div>
-                    <form onSubmit={handleSubmit}>
+                    <form>
                         <div className="">
-                            <label htmlfor="fullName">Full Name</label>
+                            <label className="mx-2 text-gray-200 font-semibold" htmlfor="fullName">Full Name</label>
                             <input 
+                                className="my-2 mx-2 bx-3 block rounded-md"
                                 name="fullName"
                                 type="text"
                                 placeholder="Full Name"
@@ -66,20 +81,14 @@ const UserHandler = ({ setIsData }) => {
                                 hidden="true"
                                 required
                             />
-                            <input 
-                                type='button' 
-                                value='Check in' 
-                                onClick={handleCheckIn}
-                            />
-                            <input 
-                                type='button' 
-                                value='Log Details'
-                                onClick={handleLogDetails} 
-                            />
                         </div>
                     </form>
+                    <div className="inline">
+                        <button className='mx-2 my-2 px-1 py-1 bg-sky-200 rounded-md' onClick={handleCheckIn}>Check In</button>
+                        <button className='mx-2 my-2 px-1 py-1 bg-sky-200 rounded-md' onClick={handleLogDetails}>Log Details</button>
+                    </div>
                 </div>
-            ) : <div>Connect to a provider.</div>
+            ) : <div className='fixed top-600 left-960'>Connect to a provider.</div>
         }
     </div>
   )

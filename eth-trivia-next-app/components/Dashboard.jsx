@@ -201,55 +201,44 @@ const Dashboard = () => {
             position: "topR",
         })
     }
-    // log deployer
-    const deployer_address = ''
-
     return (
         <div>
             {
                 isWeb3Enabled ? (
-                    deployer_address == account ? (
-                        <div>
-                            <div>
-                                <button onClick={withdrawLink}>Withdraw Link</button>
-                                <button onClick={closeDraw}>Close Draw</button>
-                                <button onClick={openDraw}>Open Draw</button>
-                                <button onClick={getWinnersList}>New Winners</button>
-                            </div>
-                            <RenderWinners 
-                                winner1={winner1}
-                                winner2={winner2}
-                                winner3={winner3}
-                                winner4={winner4}
-                            />
-                           <Form
-                                onSubmit={transferWinnings}
-                                data={[
-                                    {
-                                        name: "Player Address",
-                                        type: "text",
-                                        inputWidth: "50%",
-                                        value: "",
-                                        key: "playerAddress",
-                                    }                                    
-                                ]}
-                                title="Sell your NFT!"
-                                id="Main Form"
-                            /> 
+                    <div>
+                        <div className="my-5 bg-blue-300">
+                            <button className="px-2 mx-2 my-2 bg-sky-200 font-semibold rounded-md" onClick={withdrawLink}>Withdraw Link</button>
+                            <button className="px-2 mx-2 my-2 bg-sky-200 font-semibold rounded-md" onClick={closeDraw}>Close Draw</button>
+                            <button className="px-2 mx-2 my-2 bg-sky-200 font-semibold rounded-md" onClick={openDraw}>Open Draw</button>
+                            <button className="px-2 mx-2 my-2 bg-sky-200 font-semibold rounded-md" onClick={getWinnersList}>New Winners</button>
+                            <button className="px-2 mx-2 my-2 bg-sky-200 font-semibold rounded-md" onClick={drawReturn}>Get Draw State</button>
                         </div>
-                    ) : (
-                        <div>
-                            <div onClick={drawReturn}>Get Draw State</div>
+
+                        <Form
+                            onSubmit={transferWinnings}
+                            data={[
+                                {
+                                    name: "Player Address",
+                                    type: "text",
+                                    inputWidth: "50%",
+                                    value: "",
+                                    key: "playerAddress",
+                                }                                    
+                            ]}
+                            title="Transfer Winnings!"
+                            id="Main Form"
+                        /> 
+                        <div> 
                             {
                                 drawState == 0 ? (
-                                    <div>Draw is still Open, Trivia is Unavailable. Check again in a few minutes</div>
+                                    <div className="bg-blue-300 font-semibold text-gray-200">Draw is still Open, Trivia is Unavailable. Check again in a few minutes</div>
                                 ):(
-                                    <div>Trivia is now available, navigate to trivia page to check your status and play.</div>
+                                    <div className="bg-blue-300 font-semibold text-gray-200">Trivia is now available, navigate to trivia page to check your status and play.</div>
                                 )
                             }
                             <div></div>
                         </div>
-                    )
+                    </div>
                 ): <div>Connect to a Web3 provider</div> 
             }
         </div>
